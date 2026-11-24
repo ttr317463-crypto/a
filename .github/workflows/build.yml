@@ -1,0 +1,31 @@
+# language: YAML, file: .github/workflows/build.yml
+name: build-windows-exe
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Compile
+        shell: cmd
+        run: |
+          cl /MT /O2 /SUBSYSTEM:WINDOWS prank_payload_no_admin.cpp user32.lib advapi32.lib
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: prank_payload_no_admin
+          path: prank_payload_no_admin.exe
+          if-no-files-found: error
